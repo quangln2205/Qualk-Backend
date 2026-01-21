@@ -1,4 +1,99 @@
-# QualkBackend
+# Qualk - Social App Backend
+
+A social media application (Instagram/Locket-style) built with Spring Boot and React. This repository contains the backend microservice.
+
+## Project Overview
+
+**Qualk** is a photo/video sharing social app where users can:
+- Create and share posts with friends
+- Discover trending content
+- Like and comment on posts
+- Follow other users
+
+**Team:** Dang & Quang
+
+---
+
+## Development Roadmap
+
+### **PHASE 1: MVP (2-3 months)**
+**Goal:** Build core social features to launch MVP
+
+#### Features:
+1. **User Authentication & Profiles**
+   - [ ] User registration (email/password)
+   - [ ] User login/logout
+   - [ ] User profile page (name, bio, avatar, follower count)
+   - [ ] Edit profile (update bio, avatar, basic info)
+   - [ ] Password reset
+
+2. **Post Creation & Sharing**
+   - [ ] Upload photo/video
+   - [ ] Add caption/description
+   - [ ] Create post (save to backend)
+   - [ ] Delete own posts
+   - [ ] View post details
+
+3. **Feed & Discovery**
+   - [ ] Home feed (posts from followed users)
+   - [ ] Explore/Discover feed (trending/public posts)
+   - [ ] View user's profile posts
+   - [ ] Pagination/infinite scroll on feeds
+
+4. **Social Interactions**
+   - [ ] Like/Unlike posts
+   - [ ] Comment on posts
+   - [ ] View comments on a post
+   - [ ] Delete own comments
+   - [ ] Like count display
+
+5. **Follow System**
+   - [ ] Follow/Unfollow users
+   - [ ] View follower list
+   - [ ] View following list
+   - [ ] Follow recommendations (optional)
+
+6. **Search & Navigation**
+   - [ ] Search users by username
+   - [ ] Basic navigation (Home, Explore, Profile, Search)
+   - [ ] Mobile-responsive UI
+
+7. **Backend Infrastructure**
+   - [ ] User service & authentication
+   - [ ] Post/Media service (CRUD)
+   - [ ] Follow relationship management
+   - [ ] Like/Comment service
+   - [ ] File storage/serving for images/videos
+
+---
+
+### **PHASE 2: Enhancements (2-3 months)**
+**Goal:** Add advanced features and improve user engagement
+
+#### Features:
+- [ ] Real-time notifications (likes, comments, follows)
+- [ ] Direct messaging / DMs
+- [ ] Stories / Ephemeral content
+- [ ] Image filters & basic editing
+- [ ] Advanced search (hashtags, locations)
+- [ ] User recommendations / discovery algorithm
+- [ ] Trending posts/hashtags
+- [ ] Share posts to external platforms
+- [ ] User blocking / reporting
+- [ ] Analytics dashboard
+
+---
+
+## Tech Stack
+
+- **Backend:** Spring Boot (JHipster 8.11.0)
+- **Frontend:** React
+- **Database:** MySQL
+- **Architecture:** Microservices
+
+---
+
+## Quick Start
 
 This application was generated using JHipster 8.11.0, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v8.11.0](https://www.jhipster.tech/documentation-archive/v8.11.0).
 
