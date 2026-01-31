@@ -103,8 +103,10 @@ Qualk-Backend/
 │   └── resources/                          # Config & static files
 ├── src/test/                               # Unit & integration tests
 ├── gradle/                                 # Gradle wrapper configs
+├── buildSrc/                               # Gradle build source
 ├── build.gradle                            # Gradle build file
 ├── gradle.properties                       # Gradle properties
+├── settings.gradle                         # Gradle settings
 └── .yo-rc.json                             # JHipster configuration
 ```
 
@@ -116,68 +118,139 @@ myapp/
 ├── ApplicationWebXml.java                  # Web app configuration
 ├── GeneratedByJHipster.java                # JHipster marker
 │
-├── aop/                                    # Aspect-Oriented Programming
-│   └── Logging, security aspects
+├── aop/logging/                            # Aspect-Oriented Programming
+│   ├── LoggingAspect.java                  # Method logging interceptor
+│   └── package-info.java
 │
-├── config/                                 # Configuration classes
-│   ├── SecurityConfiguration.java          # Spring Security setup
-│   ├── SecurityJwtConfiguration.java       # JWT authentication
-│   ├── DatabaseConfiguration.java          # DB connection
-│   ├── CacheConfiguration.java             # Caching (Redis/Caffeine)
-│   ├── AsyncConfiguration.java             # Async/threading
-│   ├── JacksonConfiguration.java           # JSON serialization
-│   ├── WebConfigurer.java                  # Web/CORS setup
-│   └── Other Spring beans & configs
+├── config/                                 # Spring Configuration & Beans
+│   ├── SecurityConfiguration.java          # Spring Security setup, JWT auth
+│   ├── SecurityJwtConfiguration.java       # JWT token configuration
+│   ├── SecurityInMemoryConfiguration.java  # In-memory user details
+│   ├── DatabaseConfiguration.java          # JPA/Hibernate configuration
+│   ├── CacheConfiguration.java             # Caffeine caching setup
+│   ├── AsyncConfiguration.java             # Async task executor
+│   ├── JacksonConfiguration.java           # JSON serialization config
+│   ├── WebConfigurer.java                  # Web server, CORS, headers
+│   ├── LiquibaseConfiguration.java         # Database migration setup
+│   ├── LoggingConfiguration.java           # Logging setup
+│   ├── LoggingAspectConfiguration.java     # Enable logging AOP
+│   ├── ApplicationProperties.java          # Custom app properties
+│   ├── OpenApiConfiguration.java           # Swagger/OpenAPI setup
+│   ├── Constants.java                      # Application constants
+│   └── DateTimeFormatConfiguration.java
 │
-├── domain/                                 # Entity models
-│   ├── AbstractAuditingEntity.java         # Base entity (created/modified tracking)
-│   └── (User, Post, Comment, Follow entities will go here)
+├── domain/                                 # Entity models / Domain Layer
+│   ├── AbstractAuditingEntity.java         # Base entity (createdDate, lastModifiedDate, createdBy, lastModifiedBy)
+│   ├── Authority.java                      # User roles/authorities
+│   ├── User.java                           # User entity
+│   └── (Post, Comment, Follow, Like entities to be created in Phase 1)
 │
-├── management/                             # Actuator endpoints (health, metrics)
+├── repository/                             # Data Access Layer
+│   ├── UserRepository.java                 # User database operations
+│   └── AuthorityRepository.java            # Authority database operations
+│   └── (PostRepository, CommentRepository, FollowRepository, LikeRepository to be created)
 │
-├── repository/                             # Data access layer
-│   └── (UserRepository, PostRepository, CommentRepository, etc.)
-│
-├── service/                                # Business logic layer
-│   └── (UserService, PostService, CommentService, etc.)
+├── service/                                # Business Logic Layer
+│   ├── UserService.java                    # User business logic (registration, password reset)
+│   ├── MailService.java                    # Email sending service
+│   ├── dto/                                # Data Transfer Objects (DTOs)
+│   │   ├── UserDTO.java                    # User data for API responses
+│   │   ├── AdminUserDTO.java               # Admin user data
+│   │   ├── PasswordChangeDTO.java          # Password change request
+│   │   └── package-info.java
+│   ├── mapper/                             # DTO mappers
+│   │   ├── UserMapper.java                 # Convert User entity ↔ UserDTO
+│   │   └── package-info.java
+│   ├── UsernameAlreadyUsedException.java   # Custom exceptions
+│   ├── EmailAlreadyUsedException.java
+│   ├── InvalidPasswordException.java
+│   └── package-info.java
 │
 ├── security/                               # Security utilities
-│   ├── JWT handling
-│   ├── User authentication
-│   └── Authorization checks
+│   ├── SecurityUtils.java                  # Get current user, check authorities
+│   ├── AuthoritiesConstants.java           # Role/Authority constants (USER, ADMIN)
+│   ├── SpringSecurityAuditorAware.java     # Audit tracking (who created/modified)
+│   └── jwt/                                # JWT token handling
+│       ├── TokenProvider.java              # JWT token creation/validation
+│       ├── JwtAuthenticationEntryPoint.java # Handle unauthorized requests
+│       ├── JwtAuthenticationFilter.java    # Extract JWT from requests
+│       └── AuthenticationIntegrationTest.java
 │
-├── web/
-│   └── rest/                               # REST API controllers
-│       └── (UserResource, PostResource, CommentResource, etc.)
+├── web/rest/                               # REST API Controllers / Presentation Layer
+│   ├── AuthenticateController.java         # POST /api/authenticate (login)
+│   ├── AccountResource.java                # Account management endpoints (register, profile, password reset)
+│   ├── PublicUserResource.java             # GET /api/users (public user list)
+│   ├── UserResource.java                   # User CRUD endpoints (admin only)
+│   ├── AuthorityResource.java              # Authority/role management
+│   ├── errors/                             # Error handling
+│   │   ├── ExceptionTranslator.java        # Convert exceptions to HTTP responses
+│   │   ├── BadRequestAlertException.java   # 400 errors
+│   │   ├── FieldErrorVM.java               # Field validation error
+│   │   ├── ErrorConstants.java
+│   │   └── package-info.java
+│   ├── vm/                                 # View Models (Request/Response DTOs)
+│   │   ├── LoginVM.java                    # Login request
+│   │   ├── ManagedUserVM.java              # User registration request
+│   │   ├── KeyAndPasswordVM.java           # Password reset request
+│   │   └── package-info.java
+│   └── package-info.java
 │
-└── web/rest/vm/                            # View Models (DTOs)
-    └── Request/Response objects
+├── management/                             # Actuator endpoints
+│   └── SecurityMetersService.java          # Security-related metrics
+│
+└── GeneratedByJHipster.java                # JHipster marker annotation
 ```
 
 ### **Resources** (`src/main/resources/`)
 
 ```
 resources/
-├── config/                                 # Environment configs
-│   ├── application.yml                     # Default config
-│   ├── application-dev.yml                 # Development profile
-│   └── application-prod.yml                # Production profile
+├── config/                                 # Environment-specific configs
+│   ├── application.yml                     # Default/base configuration
+│   ├── application-dev.yml                 # Development profile (local)
+│   ├── application-prod.yml                # Production profile
+│   ├── application-testdev.yml             # Testing profile
+│   ├── application-testprod.yml
+│   ├── liquibase/                          # Database migration scripts
+│   │   ├── changelog/                      # Migration changesets
+│   │   │   └── 00000000000000_initial_schema.xml  # Initial database schema
+│   │   └── master.xml                      # Migration master file
+│   └── tls/                                # TLS/SSL certificates (dev)
+│       └── keystore.p12
 │
-├── i18n/                                   # Internationalization (multi-language)
-│   └── messages_*.properties
+├── i18n/                                   # Internationalization
+│   ├── messages.properties                 # Default (English) messages
+│   ├── messages_en.properties              # English translations
+│   ├── messages_vi.properties              # Vietnamese translations
+│   └── More language files...
 │
-├── swagger/                                # OpenAPI/Swagger docs
+├── swagger/                                # OpenAPI/Swagger documentation
 │   └── api.yml                             # API definitions
 │
-├── logback-spring.xml                      # Logging configuration
-├── banner.txt                              # Startup banner
+├── docker/                                 # Docker configurations
+│   ├── app.yml                             # Application container
+│   ├── services.yml                        # MySQL, other services
+│   ├── mysql.yml                           # MySQL configuration
+│   ├── jhipster-control-center.yml         # JHipster dashboard
+│   ├── monitoring.yml                      # Prometheus, Grafana
+│   ├── sonar.yml                           # SonarQube
+│   ├── swagger-editor.yml                  # Swagger editor
+│   ├── config/mysql/my.cnf                 # MySQL settings
+│   ├── jib/entrypoint.sh                   # Container entry script
+│   └── prometheus/                         # Prometheus config
 │
-└── static/                                 # Static assets (if needed)
+├── logback-spring.xml                      # Logging configuration (SLF4J)
+├── banner.txt                              # Application startup banner
+└── static/                                 # Static web assets (if any)
 ```
 
 ### **Build Configuration**
 
-- **`build.gradle`** - Main build file with dependencies (Spring Boot, JPA, Security, etc.)
+- **`build.gradle`** - Main build file with all dependencies (Spring Boot, JPA, Security, etc.)
+- **`settings.gradle`** - Gradle project settings
+- **`gradle.properties`** - Version properties and gradle settings
+- **`gradle/libs.versions.toml`** - Central dependency version management
+- **`buildSrc/`** - Custom gradle plugins and conventions
 - **`settings.gradle`** - Gradle project settings
 - **`gradle.properties`** - Version properties
 - **`gradle/libs.versions.toml`** - Central dependency management
