@@ -20,6 +20,14 @@ logging:
     org.hibernate.SQL: DEBUG
     com.mycompany.myapp: DEBUG
 
+management:
+  zipkin: # Use the "zipkin" Maven profile to have the Spring Cloud Zipkin dependencies
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0 # report 100% of traces
+
 spring:
   devtools:
     restart:
@@ -30,6 +38,27 @@ spring:
   jackson:
     serialization:
       indent-output: true
+  cloud:
+    config:
+      enabled: false  # Disable Spring Cloud Config
+    consul:
+      enabled: false  # Disable Consul for local development
+      host: localhost
+      port: 8500
+      config:
+        enabled: false
+        fail-fast: false # if not in "prod" profile, do not force to use Spring Cloud Config
+        format: yaml
+        profile-separator: '-'
+      discovery:
+        enabled: false  # Disable Consul service discovery locally
+        prefer-ip-address: true
+        tags:
+          - profile=${spring.profiles.active}
+          - version='@project.version@'
+          - git-version=${git.commit.id.describe:}
+          - git-commit=${git.commit.id.abbrev:}
+          - git-branch=${git.branch:}
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://localhost:3306/QualkBackend?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true
@@ -46,18 +75,13 @@ spring:
   liquibase:
     # Remove 'faker' if you do not want the sample data to be loaded automatically
     contexts: dev, faker
-  mail:
-    host: localhost
-    port: 25
-    username:
-    password:
   messages:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   thymeleaf:
     cache: false
 
 server:
-  port: 8080
+  port: 8081
   # make sure requests the proxy uri instead of the server one
   forward-headers-strategy: native
 
@@ -72,27 +96,23 @@ jhipster:
     caffeine: # Caffeine configuration
       time-to-live-seconds: 3600 # By default objects stay 1 hour in the cache. This sets expireAfterWrite in Caffeine (https://github.com/ben-manes/caffeine/wiki/Eviction#time-based)
       max-entries: 100 # Number of objects in each cache entry
-  # CORS is only enabled by default with the "dev" profile
-  cors:
-    # Allow Ionic for JHipster by default (* no longer allowed in Spring Boot 2.4+)
-    allowed-origins: 'http://localhost:8100,https://localhost:8100'
-    # Enable CORS when running in GitHub Codespaces
-    allowed-origin-patterns: 'https://*.githubpreview.dev'
-    allowed-methods: '*'
-    allowed-headers: '*'
-    exposed-headers: 'Authorization,Link,X-Total-Count,X-${jhipster.clientApp.name}-alert,X-${jhipster.clientApp.name}-error,X-${jhipster.clientApp.name}-params'
-    allow-credentials: true
-    max-age: 1800
+  # CORS is disabled by default on microservices, as you should access them through a gateway.
+  # If you want to enable it, please uncomment the configuration below.
+  # cors:
+  #   allowed-origins: "http://localhost:9000,https://localhost:9000"
+  #   allowed-methods: "*"
+  #   allowed-headers: "*"
+  #   exposed-headers: "Authorization,Link,X-Total-Count"
+  #   allow-credentials: true
+  #   max-age: 1800
   security:
     authentication:
       jwt:
         # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
-        base64-secret: YmQyMDQ1NDU4YjEwNmZmMjA3MmJmYjA5MzkzYzE0MzhlN2U0NGJmZTJmMTRlNjVlNGVhNTM1M2FkYmU1MTJkOWNmOTZlNjZhMGQxMzgyYjk5YTllMDNlMWNkNGQ1Y2ZiYmE1NDBlMmM0OGQwNDMzZDNmYzZlODZmODFlYjNmN2U=
+        base64-secret: YmQ3NTlkM2VmZWM2MWIyZDYzOWU3ZGVlNjc1YjU1MTExMjRlMDZiODVlMTMyZjBiYjkxNmQyNzMxMDdmMzVmMDdjM2U4ZDA3ZDYxM2MyOGU2YTAzN2FmYjdmNDdmNzNiMjExMzcwYTAwMTQyNGU2ODIwNjA1YTNiMWMyYTE2Mzc=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000
-  mail: # specific JHipster mail property, for standard properties see MailProperties
-    base-url: http://127.0.0.1:8080
   logging:
     use-json-format: false # By default, logs are not in Json format
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
@@ -100,6 +120,18 @@ jhipster:
       host: localhost
       port: 5000
       ring-buffer-size: 512
+
+# ===================================================================
+# SpringDoc/Swagger configuration for local development
+# ===================================================================
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    try-it-out-enabled: true
+    operations-sorter: method
+  api-docs:
+    path: /v3/api-docs
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
