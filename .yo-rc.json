@@ -1,0 +1,30 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "jwt",
+    "baseName": "QualkBackend",
+    "buildTool": "gradle",
+    "cacheProvider": "caffeine",
+    "creationTimestamp": 1769826951678,
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "enableGradleEnterprise": false,
+    "enableHibernateCache": true,
+    "enableTranslation": true,
+    "entities": [],
+    "feignClient": null,
+    "gradleEnterpriseHost": null,
+    "jhipsterVersion": "8.9.0",
+    "jwtSecretKey": "YmQyMDQ1NDU4YjEwNmZmMjA3MmJmYjA5MzkzYzE0MzhlN2U0NGJmZTJmMTRlNjVlNGVhNTM1M2FkYmU1MTJkOWNmOTZlNjZhMGQxMzgyYjk5YTllMDNlMWNkNGQ1Y2ZiYmE1NDBlMmM0OGQwNDMzZDNmYzZlODZmODFlYjNmN2U=",
+    "languages": ["en"],
+    "nativeLanguage": "en",
+    "packageName": "com.mycompany.myapp",
+    "prodDatabaseType": "mysql",
+    "reactive": false,
+    "serverPort": null,
+    "serviceDiscoveryType": null,
+    "skipClient": true,
+    "syncUserWithIdp": null,
+    "testFrameworks": ["gatling", "cucumber"]
+  }
+}
