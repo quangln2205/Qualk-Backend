@@ -29,6 +29,9 @@ management:
       probability: 1.0 # report 100% of traces
 
 spring:
+  mail:
+    host: localhost
+    port: 25
   devtools:
     restart:
       enabled: true
@@ -61,9 +64,9 @@ spring:
           - git-branch=${git.branch:}
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306/QualkBackend?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true
-    username: root
-    password:
+    url: jdbc:mysql://52.77.127.3:3306/qualkdb?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true
+    username: qualkuser
+    password: quangvp2006
     hikari:
       poolName: Hikari
       auto-commit: false

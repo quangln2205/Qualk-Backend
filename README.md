@@ -477,7 +477,7 @@ docker run --name qualk-mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -p 3306:3306 -d 
 ./gradlew bootRun
 
 # 3. Access the app
-- Backend: http://localhost:8080/
-- Swagger UI: http://localhost:8080/swagger-ui.html
-- API Docs: http://localhost:8080/v3/api-docs
+- Backend: http://localhost:8081/
+- Swagger UI: http://localhost:8081/swagger-ui.html
+- API Docs: http://localhost:8081/v3/api-docs
 ```
