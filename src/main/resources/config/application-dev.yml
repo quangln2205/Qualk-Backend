@@ -29,6 +29,9 @@ management:
       probability: 1.0 # report 100% of traces
 
 spring:
+  docker:
+    compose:
+      enabled: false # Disable Docker Compose as we use remote MySQL
   mail:
     host: localhost
     port: 25
@@ -43,18 +46,18 @@ spring:
       indent-output: true
   cloud:
     config:
-      enabled: false  # Disable Spring Cloud Config
+      enabled: false # Disable Spring Cloud Config
     consul:
-      enabled: false  # Disable Consul for local development
+      enabled: false # Disable Consul for local development
       host: localhost
       port: 8500
       config:
         enabled: false
         fail-fast: false # if not in "prod" profile, do not force to use Spring Cloud Config
         format: yaml
-        profile-separator: '-'
+        profile-separator: "-"
       discovery:
-        enabled: false  # Disable Consul service discovery locally
+        enabled: false # Disable Consul service discovery locally
         prefer-ip-address: true
         tags:
           - profile=${spring.profiles.active}
@@ -64,7 +67,7 @@ spring:
           - git-branch=${git.branch:}
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://52.77.127.3:3306/qualkdb?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true
+    url: jdbc:mysql://52.77.127.3:3306/qualkdb?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
     username: qualkuser
     password: quangvp2006
     hikari:
