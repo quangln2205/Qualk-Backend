@@ -41,14 +41,19 @@ public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Buil
             .authorizeHttpRequests(authz ->
             // prettier-ignore
             authz
-                    // --- START: Thêm lại các dòng này để mở Swagger UI công khai ---
+                    // --- Swagger UI - Allow anonymous access ---
                     .requestMatchers(mvc.pattern("/swagger-ui/**")).permitAll()
                     .requestMatchers(mvc.pattern("/swagger-ui.html")).permitAll()
                     .requestMatchers(mvc.pattern("/v3/api-docs/**")).permitAll()
-                    // --- END: Thêm lại các dòng này ---
+                    .requestMatchers(mvc.pattern("/v3/api-docs.yaml")).permitAll()
+                    .requestMatchers(mvc.pattern("/swagger-resources/**")).permitAll()
+                    .requestMatchers(mvc.pattern("/webjars/**")).permitAll()
+                    // --- END Swagger UI ---
 
                     .requestMatchers(mvc.pattern(HttpMethod.POST, "/api/authenticate")).permitAll()
                     .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/authenticate")).permitAll()
+                    .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/account")).permitAll()
+                    .requestMatchers(mvc.pattern(HttpMethod.POST, "/api/account")).permitAll()
                     .requestMatchers(mvc.pattern("/api/register")).permitAll()
                     .requestMatchers(mvc.pattern("/api/activate")).permitAll()
                     .requestMatchers(mvc.pattern("/api/account/reset-password/init")).permitAll()

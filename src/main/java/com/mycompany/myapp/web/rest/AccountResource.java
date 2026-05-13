@@ -10,6 +10,9 @@ import com.mycompany.myapp.service.dto.PasswordChangeDTO;
 import com.mycompany.myapp.web.rest.errors.*;
 import com.mycompany.myapp.web.rest.vm.KeyAndPasswordVM;
 import com.mycompany.myapp.web.rest.vm.ManagedUserVM;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
@@ -17,12 +20,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * REST controller for managing the current user's account.
  */
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Account", description = "User account management endpoints")
 public class AccountResource {
 
     private static class AccountResourceException extends RuntimeException {
@@ -85,7 +90,13 @@ public class AccountResource {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be returned.
      */
     @GetMapping("/account")
+    @Operation(summary = "Get current user account", description = "Retrieve the current authenticated user's account information")
+    @SecurityRequirement(name = "bearer-jwt")
     public AdminUserDTO getAccount() {
+        // Check if user is authenticated - return 401 if not
+        String userLogin = SecurityUtils.getCurrentUserLogin()
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User authentication required"));
+        
         return userService
             .getUserWithAuthorities()
             .map(AdminUserDTO::new)

@@ -5,6 +5,9 @@ import static com.mycompany.myapp.security.SecurityUtils.JWT_ALGORITHM;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mycompany.myapp.web.rest.vm.LoginVM;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.security.Principal;
 import java.time.Instant;
@@ -33,6 +36,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Authentication", description = "User authentication endpoints")
 public class AuthenticateController {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticateController.class);
@@ -53,6 +57,7 @@ public class AuthenticateController {
     }
 
     @PostMapping("/authenticate")
+    @Operation(summary = "Authenticate user", description = "Login with username and password to get JWT token")
     public ResponseEntity<JWTToken> authorize(@Valid @RequestBody LoginVM loginVM) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
             loginVM.getUsername(),
@@ -74,6 +79,8 @@ public class AuthenticateController {
      * @return the login if the user is authenticated.
      */
     @GetMapping(value = "/authenticate", produces = MediaType.TEXT_PLAIN_VALUE)
+    @Operation(summary = "Check authentication", description = "Get current authenticated user login")
+    @SecurityRequirement(name = "bearer-jwt")
     public String isAuthenticated(Principal principal) {
         LOG.debug("REST request to check if the current user is authenticated");
         return principal == null ? null : principal.getName();
