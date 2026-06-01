@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Share entity table for user shares of posts
+    -->
+    <changeSet id="00000000000006" author="qualk-team">
+        <createTable tableName="share">
+            <column name="id" type="bigint" autoIncrement="true" startWith="1050">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="post_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp"/>
+            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_date" type="timestamp"/>
+        </createTable>
+
+        <createIndex indexName="idx_share_post_id" tableName="share">
+            <column name="post_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_share_user_id" tableName="share">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_share_unique" tableName="share" unique="true">
+            <column name="user_id"/>
+            <column name="post_id"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="post_id"
+                                 baseTableName="share"
+                                 constraintName="fk_share_post_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="post"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="share"
+                                 constraintName="fk_share_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
+        <dropDefaultValue tableName="share" columnName="created_date" columnDataType="${datetimeType}"/>
+    </changeSet>
+</databaseChangeLog>

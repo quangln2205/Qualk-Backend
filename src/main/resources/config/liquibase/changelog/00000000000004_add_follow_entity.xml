@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Follow entity table for user follow relationships
+    -->
+    <changeSet id="00000000000004" author="qualk-team">
+        <createTable tableName="follow">
+            <column name="id" type="bigint" autoIncrement="true" startWith="1050">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="follower_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="following_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp"/>
+            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_date" type="timestamp"/>
+        </createTable>
+
+        <createIndex indexName="idx_follow_follower_id" tableName="follow">
+            <column name="follower_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_follow_following_id" tableName="follow">
+            <column name="following_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_follow_unique" tableName="follow" unique="true">
+            <column name="follower_id"/>
+            <column name="following_id"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="follower_id"
+                                 baseTableName="follow"
+                                 constraintName="fk_follow_follower_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="following_id"
+                                 baseTableName="follow"
+                                 constraintName="fk_follow_following_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
+        <dropDefaultValue tableName="follow" columnName="created_date" columnDataType="${datetimeType}"/>
+    </changeSet>
+</databaseChangeLog>

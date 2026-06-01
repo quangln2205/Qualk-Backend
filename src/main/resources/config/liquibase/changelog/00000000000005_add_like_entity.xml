@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Like entity table for user likes on posts and comments
+    -->
+    <changeSet id="00000000000005" author="qualk-team">
+        <createTable tableName="jhi_like">
+            <column name="id" type="bigint" autoIncrement="true" startWith="1050">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="post_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="comment_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp"/>
+            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_date" type="timestamp"/>
+        </createTable>
+
+        <createIndex indexName="idx_like_user_id" tableName="jhi_like">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_like_post_id" tableName="jhi_like">
+            <column name="post_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_like_comment_id" tableName="jhi_like">
+            <column name="comment_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_like_user_post" tableName="jhi_like" unique="true">
+            <column name="user_id"/>
+            <column name="post_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_like_user_comment" tableName="jhi_like" unique="true">
+            <column name="user_id"/>
+            <column name="comment_id"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="jhi_like"
+                                 constraintName="fk_like_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="post_id"
+                                 baseTableName="jhi_like"
+                                 constraintName="fk_like_post_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="post"/>
+
+        <addForeignKeyConstraint baseColumnNames="comment_id"
+                                 baseTableName="jhi_like"
+                                 constraintName="fk_like_comment_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="comment"/>
+
+        <dropDefaultValue tableName="jhi_like" columnName="created_date" columnDataType="${datetimeType}"/>
+    </changeSet>
+</databaseChangeLog>
