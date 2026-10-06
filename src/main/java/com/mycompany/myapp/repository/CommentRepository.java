@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
+    long countByUserId(Long userId);
+
     /**
      * Find all comments for a specific post.
      * 

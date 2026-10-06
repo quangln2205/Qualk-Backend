@@ -108,6 +108,7 @@ configurations {
 }
 
 dependencies {
+    implementation "software.amazon.awssdk:bedrockruntime:2.30.38"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-hppc"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
     

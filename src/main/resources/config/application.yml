@@ -91,6 +91,8 @@ management:
       application: ${spring.application.name}
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: QualkBackend
   docker:

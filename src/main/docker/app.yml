@@ -7,6 +7,11 @@ services:
       - _JAVA_OPTIONS=-Xmx512m -Xms256m
       - SPRING_PROFILES_ACTIVE=prod,api-docs
       - MANAGEMENT_PROMETHEUS_METRICS_EXPORT_ENABLED=true
+      - AI_PROVIDER=bedrock
+      - AI_MODEL_ID=amazon.nova-lite-v1:0
+      - AWS_REGION=us-east-1
+      - AI_MAX_TOKENS=500
+      - AI_TEMPERATURE=0.3
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/qualkbackend?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true
       - SPRING_LIQUIBASE_URL=jdbc:mysql://mysql:3306/qualkbackend?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true
     ports:
