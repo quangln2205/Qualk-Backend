@@ -1,11 +1,14 @@
 package com.mycompany.myapp.repository;
 
 import com.mycompany.myapp.domain.Share;
+import com.mycompany.myapp.repository.projection.PostInteractionCount;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,9 +16,17 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ShareRepository extends JpaRepository<Share, Long> {
+    @Query(
+        "select new com.mycompany.myapp.repository.projection.PostInteractionCount(s.postId, count(s)) from Share s where s.postId in :ids group by s.postId"
+    )
+    List<PostInteractionCount> countForPosts(@Param("ids") List<Long> ids);
+
+    @Query("select distinct s.postId from Share s where s.postId in :ids and s.user.login = :login")
+    java.util.Set<Long> findSharedPostIds(@Param("ids") List<Long> ids, @Param("login") String login);
+
     /**
      * Find a share relationship for a user and post.
-     * 
+     *
      * @param userId the user ID
      * @param postId the post ID
      * @return optional share relationship
@@ -24,7 +35,7 @@ public interface ShareRepository extends JpaRepository<Share, Long> {
 
     /**
      * Count shares for a specific post.
-     * 
+     *
      * @param postId the post ID
      * @return count of shares
      */
@@ -32,7 +43,7 @@ public interface ShareRepository extends JpaRepository<Share, Long> {
 
     /**
      * Check if a user has shared a specific post.
-     * 
+     *
      * @param userId the user ID
      * @param postId the post ID
      * @return true if share exists
@@ -41,7 +52,7 @@ public interface ShareRepository extends JpaRepository<Share, Long> {
 
     /**
      * Find all shares by a specific user.
-     * 
+     *
      * @param userId the user ID
      * @param pageable pagination information
      * @return page of shares
@@ -50,7 +61,7 @@ public interface ShareRepository extends JpaRepository<Share, Long> {
 
     /**
      * Find all shares for a specific post.
-     * 
+     *
      * @param postId the post ID
      * @param pageable pagination information
      * @return page of shares
@@ -59,7 +70,7 @@ public interface ShareRepository extends JpaRepository<Share, Long> {
 
     /**
      * Find all shares for a specific post.
-     * 
+     *
      * @param postId the post ID
      * @return list of shares
      */
@@ -67,7 +78,7 @@ public interface ShareRepository extends JpaRepository<Share, Long> {
 
     /**
      * Find all shares by a specific user.
-     * 
+     *
      * @param userId the user ID
      * @return list of shares
      */

@@ -1,6 +1,9 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.service.FeedService;
 import com.mycompany.myapp.service.PostService;
+import com.mycompany.myapp.service.dto.CommentSummaryDTO;
+import com.mycompany.myapp.service.dto.FeedPostDTO;
 import com.mycompany.myapp.service.dto.PostDTO;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,9 +31,37 @@ public class PostResource {
     private static final Logger LOG = LoggerFactory.getLogger(PostResource.class);
 
     private final PostService postService;
+    private final FeedService feedService;
 
-    public PostResource(PostService postService) {
+    public PostResource(PostService postService, FeedService feedService) {
         this.postService = postService;
+        this.feedService = feedService;
+    }
+
+    @GetMapping("/feed")
+    public ResponseEntity<List<FeedPostDTO>> getFeed(@RequestParam(required = false) Long userId, Pageable pageable) {
+        Page<FeedPostDTO> page = feedService.getFeed(userId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<Page<CommentSummaryDTO>> getCommentSummaries(@PathVariable Long id, Pageable pageable) {
+        return ResponseEntity.ok(feedService.getComments(id, pageable));
+    }
+
+    @GetMapping("/{id}/image")
+    public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
+        return feedService
+            .getImage(id)
+            .map(image ->
+                ResponseEntity.ok()
+                    .contentType(org.springframework.http.MediaType.parseMediaType(image.contentType()))
+                    .cacheControl(org.springframework.http.CacheControl.maxAge(java.time.Duration.ofMinutes(5)).cachePrivate())
+                    .varyBy(HttpHeaders.AUTHORIZATION)
+                    .body(image.bytes())
+            )
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     /**
@@ -46,9 +77,7 @@ public class PostResource {
         LOG.debug("REST request to create Post: {}", postDTO);
 
         PostDTO result = postService.createPost(postDTO);
-        return ResponseEntity
-            .created(new URI("/api/posts/" + result.getId()))
-            .body(result);
+        return ResponseEntity.created(new URI("/api/posts/" + result.getId())).body(result);
     }
 
     /**
