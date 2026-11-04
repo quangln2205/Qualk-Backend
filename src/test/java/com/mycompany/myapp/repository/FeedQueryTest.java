@@ -2,16 +2,18 @@ package com.mycompany.myapp.repository;
 
 import com.mycompany.myapp.domain.*;
 import org.hibernate.cfg.Configuration;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.data.jpa.repository.Query;
 
 /** Hibernate parses the actual repository queries without connecting to an application database. */
 class FeedQueryTest {
 
-    @Test
-    void validatesProjectionConstructorsAndQueries() {
+    @ParameterizedTest
+    @ValueSource(strings = { "MySQLDialect", "PostgreSQLDialect" })
+    void validatesProjectionConstructorsAndQueries(String dialect) {
         Configuration configuration = new Configuration()
-            .setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect")
+            .setProperty("hibernate.dialect", "org.hibernate.dialect." + dialect)
             .setProperty("hibernate.boot.allow_jdbc_metadata_access", "false")
             .setProperty("hibernate.cache.use_second_level_cache", "false")
             .setProperty("hibernate.hbm2ddl.auto", "none");

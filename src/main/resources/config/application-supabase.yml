@@ -1,0 +1,28 @@
+# Enable after prod,render. Local dev continues to use MySQL.
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${SUPABASE_DB_URL}
+    username: ${SUPABASE_DB_USERNAME}
+    password: ${SUPABASE_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:5}
+      minimum-idle: 1
+      connection-timeout: 10000
+      data-source-properties:
+        currentSchema: qualk
+        sslmode: require
+  jpa:
+    properties:
+      hibernate.default_schema: qualk
+  liquibase:
+    change-log: classpath:config/liquibase/master-postgresql.xml
+    default-schema: qualk
+    liquibase-schema: qualk
+
+# Bound thread counts on Render's small instance.
+server:
+  undertow:
+    threads:
+      io: 2
+      worker: 16

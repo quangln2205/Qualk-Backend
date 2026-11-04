@@ -1,0 +1,19 @@
+# For a Render service connected directly to the Qualk-Backend repository.
+services:
+  - type: web
+    name: qualk-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /management/health/readiness
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod,render,supabase
+      - key: SUPABASE_DB_URL
+        sync: false
+      - key: SUPABASE_DB_USERNAME
+        sync: false
+      - key: SUPABASE_DB_PASSWORD
+        sync: false
+      - key: JHIPSTER_SECURITY_AUTHENTICATION_JWT_BASE64_SECRET
+        sync: false

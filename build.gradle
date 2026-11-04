@@ -54,15 +54,8 @@ idea {
     }
 }
 
-eclipse {
-    sourceSets {
-        main {
-            java {
-                srcDirs += ["build/generated/sources/annotationProcessor/java/main"]
-            }
-        }
-    }
-}
+// Gradle compiles annotation-processor output automatically. Adding that output
+// to sourceSets makes Hibernate regenerate existing metamodel classes on rebuild.
 
 defaultTasks "bootRun"
 
@@ -160,6 +153,7 @@ dependencies {
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-hibernate6"
     implementation "com.fasterxml.jackson.module:jackson-module-jaxb-annotations"
     implementation "com.mysql:mysql-connector-j"
+    runtimeOnly "org.postgresql:postgresql"
     implementation "com.zaxxer:HikariCP"
     implementation "org.hibernate.orm:hibernate-core"
     implementation "org.hibernate.validator:hibernate-validator"
@@ -167,6 +161,7 @@ dependencies {
     testImplementation "org.testcontainers:jdbc"
     testImplementation "org.testcontainers:junit-jupiter"
     testImplementation "org.testcontainers:mysql"
+    testImplementation "org.testcontainers:postgresql"
     testImplementation "org.testcontainers:testcontainers"
     
     annotationProcessor "org.glassfish.jaxb:jaxb-runtime"

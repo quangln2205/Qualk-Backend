@@ -24,6 +24,8 @@
 *.sass          text
 *.scss          text
 *.sh            text eol=lf
+gradlew         text eol=lf
+Dockerfile      text eol=lf
 *.sql           text
 *.txt           text
 *.ts            text

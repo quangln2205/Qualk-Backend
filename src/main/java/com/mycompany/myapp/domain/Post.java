@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 /**
  * A Post entity representing user-generated photo posts.
@@ -23,7 +25,8 @@ public class Post extends AbstractAuditingEntity<Long> implements Serializable {
     private Long id;
 
     @NotNull
-    @Lob
+    // Bind the Base64 String directly; PostgreSQL @Lob expects a large-object OID.
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     @Column(name = "image_data", nullable = false)
     private String imageData; // Base64 encoded image data
 

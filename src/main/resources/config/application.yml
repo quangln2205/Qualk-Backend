@@ -113,6 +113,8 @@ spring:
         #- tls
   jmx:
     enabled: false
+  liquibase:
+    change-log: classpath:config/liquibase/master.xml
   data:
     jpa:
       repositories:

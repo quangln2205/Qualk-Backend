@@ -1,0 +1,9 @@
+# Loaded after prod by the container's prod,render profile order.
+server:
+  address: 0.0.0.0
+  port: ${PORT:10000}
+
+spring:
+  docker:
+    compose:
+      enabled: false
