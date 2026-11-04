@@ -7,3 +7,21 @@ spring:
   docker:
     compose:
       enabled: false
+  mail:
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true # Do not transmit SMTP credentials without TLS.
+          ssl:
+            checkserveridentity: true
+          connectiontimeout: 10000
+          timeout: 10000
+          writetimeout: 10000
+
+jhipster:
+  mail:
+    # Email links must open the frontend; /api is proxied to Render by Vercel.
+    base-url: ${FRONTEND_URL:https://qualk-frontend.vercel.app}

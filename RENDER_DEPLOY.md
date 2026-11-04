@@ -36,6 +36,41 @@ Docker defaults to `prod,render,supabase`, binds `0.0.0.0:${PORT:10000}`, and di
 Use the session pooler on 5432 for persistent Spring Boot connections.
 For AI, configure the existing AWS credential provider, region and model through secrets/environment. Configure production SMTP before enabling registration emails.
 
+## Email xác minh tài khoản
+
+Backend dùng Spring/JWT và bảng `qualk.jhi_user`; không dùng Supabase Auth.
+Tài khoản mới có `activated=false` cho đến khi người dùng mở link trong email.
+Giữ luồng xác minh này khi cấu hình mail.
+
+Thêm các biến sau vào Render -> Environment (không commit credential):
+
+| Variable | Value |
+|---|---|
+| `SPRING_MAIL_HOST` | SMTP host của dịch vụ gửi mail |
+| `SPRING_MAIL_PORT` | Port có STARTTLS mà Render cho phép, ví dụ `2525` |
+| `SPRING_MAIL_USERNAME` | SMTP login, không nhất thiết là địa chỉ From |
+| `SPRING_MAIL_PASSWORD` | SMTP key của dịch vụ, không phải mật khẩu đăng nhập |
+| `JHIPSTER_MAIL_FROM` | Địa chỉ sender đã xác minh với dịch vụ gửi mail |
+| `FRONTEND_URL` | `https://qualk-frontend.vercel.app` (không có dấu `/` cuối) |
+
+Render Free chặn outbound port `25`, `465`, `587`: https://render.com/docs/free#other-limitations.
+Brevo hỗ trợ `smtp-relay.brevo.com:2525`: https://help.brevo.com/hc/en-us/articles/115000188150-Troubleshooting-Issues-with-Brevo-SMTP.
+Lấy SMTP login/key trong mục SMTP & API của Brevo; xác minh sender/domain trước khi gửi.
+Điền credential trực tiếp trên Render, không gửi trong chat, log hay Git.
+
+Profile `render` bật SMTP authentication, bắt buộc STARTTLS, kiểm tra hostname TLS
+và đặt timeout 10 giây cho connect/read/write. Không dùng implicit TLS port 465 với profile này.
+`FRONTEND_URL` mặc định là frontend Vercel hiện tại, thay cho URL mẫu trong profile `prod`.
+Nếu đã có `JHIPSTER_MAIL_BASE_URL` trong Render, xóa giá trị cũ hoặc đặt đúng frontend URL;
+biến này có độ ưu tiên cao hơn giá trị trong YAML.
+
+Sau khi Save/Rebuild & Deploy, đăng ký tài khoản bằng email thuộc quyền sở hữu của bạn.
+Kiểm tra delivery log của nhà cung cấp, Inbox/Spam, link `https://qualk-frontend.vercel.app/account/activate?...`,
+rồi mở link và đăng nhập. Health `UP` chỉ kiểm tra database, không chứng minh email đã gửi thành công.
+Cấu hình SMTP mới không tự gửi lại email cho tài khoản đang chờ kích hoạt.
+
+Rollback: khôi phục các biến mail trước đó và deploy trước đó; không xóa user hay đổi `activated`.
+
 ## MySQL local and PostgreSQL on Render
 
 Both JDBC drivers remain available. Local `dev` still uses MySQL. For MySQL production, set `SPRING_PROFILES_ACTIVE=prod,render` and the three `SPRING_DATASOURCE_*` variables instead.
