@@ -58,12 +58,11 @@ public class MailService {
 
     private void sendEmailSync(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
         LOG.debug(
-            "Send email[multipart '{}' and html '{}'] to '{}' with subject '{}' and content={}",
+            "Send email[multipart '{}' and html '{}'] to '{}' with subject '{}'",
             isMultipart,
             isHtml,
             to,
-            subject,
-            content
+            subject
         );
 
         // Prepare message using a Spring helper

@@ -71,6 +71,14 @@ Cấu hình SMTP mới không tự gửi lại email cho tài khoản đang ch�
 
 Rollback: khôi phục các biến mail trước đó và deploy trước đó; không xóa user hay đổi `activated`.
 
+### Resend an activation email
+
+`POST /api/account/resend-activation` accepts JSON `{"email":"owner@example.com"}` without a login.
+It sends only to an existing, inactive account that already has an activation key, preserving its password and key.
+Valid requests always return an empty `204`, including unknown or active accounts. Resends have a five-minute
+per-account cooldown on each instance; use a shared limiter before adding replicas. No database migration is needed.
+Check the provider's delivery event and the recipient inbox; a `204` means the request was accepted, not that mail arrived.
+
 ## MySQL local and PostgreSQL on Render
 
 Both JDBC drivers remain available. Local `dev` still uses MySQL. For MySQL production, set `SPRING_PROFILES_ACTIVE=prod,render` and the three `SPRING_DATASOURCE_*` variables instead.

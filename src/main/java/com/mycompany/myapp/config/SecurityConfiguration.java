@@ -58,6 +58,7 @@ public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Buil
                     .requestMatchers(mvc.pattern("/api/activate")).permitAll()
                     .requestMatchers(mvc.pattern("/api/account/reset-password/init")).permitAll()
                     .requestMatchers(mvc.pattern("/api/account/reset-password/finish")).permitAll()
+                    .requestMatchers(mvc.pattern(HttpMethod.POST, "/api/account/resend-activation")).permitAll()
                     .requestMatchers(mvc.pattern("/api/admin/**")).hasAuthority(AuthoritiesConstants.ADMIN)
                     
                     // --- KHÔI PHỤC DÒNG NÀY ĐỂ BẢO MẬT API THEO MẶC ĐỊNH ---
